@@ -15,8 +15,8 @@ public class Matcher {
 		
 		int[][] edges = new int[sizeOfE+sizeOfX+sizeOfY][2];
 				
-		int start = 0;
-		int end = sizeOfV + 1;
+		int start = sizeOfV + 1;
+		int end = sizeOfV + 2;
 		
 		for(int i = 0;i<sizeOfE;i++){
 			edges[i][0] = io.getInt();

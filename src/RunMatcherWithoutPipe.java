@@ -11,7 +11,7 @@ import java.io.IOException;
  * @author Magnus
  *
  */
-public class RunWithoutPipe {
+public class RunMatcherWithoutPipe {
 
 	public static void main(String args[]) throws IOException{
 		
