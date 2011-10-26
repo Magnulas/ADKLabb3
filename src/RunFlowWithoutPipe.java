@@ -18,7 +18,7 @@ public class RunFlowWithoutPipe {
 		String fileToRun;
 		
 		if(args.length == 0){
-			fileToRun = "testfall/residualtest.indata";
+			fileToRun = "testfall/HugeFlowGraph";
 		} else{
 			fileToRun = args[0];
 		}

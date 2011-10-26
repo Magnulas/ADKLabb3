@@ -2,14 +2,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-
 public class GraphAlgoritmLibrary {
 	
 	public static void edmondKarp(LinkedList<DirectedEdge>[] edges, int sinkVertex, int sourceVertex) {
 		
 		int[] parents = new int[edges.length];
 		
-		//Fixa så att retunerar edges inte vertexes
 		while(breadthFirst(edges,sourceVertex,sinkVertex, parents)){
 			int currentNode = sinkVertex;
 			ArrayList<DirectedEdge> edgePath = new ArrayList<DirectedEdge>();
@@ -24,10 +22,9 @@ public class GraphAlgoritmLibrary {
 
 				DirectedEdge neightbourEdge = edge.getNeighbourEdge();
 				
-				edge.setFlow(edge.getFlow() + leastFlow);
-				neightbourEdge.setFlow(neightbourEdge.getFlow() - leastFlow);
-//				edge.flow = edge.flow + leastFlow;
-//				neightbourEdge.flow = neightbourEdge.flow - leastFlow;
+				int newFlow = edge.getFlow() + leastFlow;
+				edge.setFlow(newFlow);
+				neightbourEdge.setFlow(-newFlow);
 			}
 		}
 	}
@@ -36,7 +33,6 @@ public class GraphAlgoritmLibrary {
 		int leastFlow = Integer.MAX_VALUE;
 		
 		for(DirectedEdge edge : edges){
-//			int currentFlow = edge.capacity-edge.flow;
 			int currentFlow = edge.getResidualCapacity();
 			if(currentFlow<leastFlow){
 				leastFlow = currentFlow;
@@ -65,14 +61,12 @@ public class GraphAlgoritmLibrary {
 			while(iter.hasNext()){
 				DirectedEdge edge = iter.next();
 				int neighbour = edge.getNeighbour();
-//				if(used[edge.neighbour] == false && (edge.capacity-edge.flow)>0) {
+				
 				if(used[neighbour] == false && edge.getResidualCapacity()>0) {
 					
-//					int nextVertex = edge.neighbour;
 					int nextVertex = neighbour;
 					parents[nextVertex] = currentVertex;
 					
-//					if(endVertex==edge.neighbour){
 					if(endVertex==neighbour){
 						return true;
 					}
@@ -91,7 +85,6 @@ public class GraphAlgoritmLibrary {
 		
 		while(iter.hasNext()){
 			DirectedEdge edge = iter.next();
-//			if(edge.neighbour == neighbour){
 			if(edge.getNeighbour() == neighbour){
 				return edge;
 			}

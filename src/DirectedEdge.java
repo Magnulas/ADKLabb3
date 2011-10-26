@@ -16,6 +16,7 @@ public class DirectedEdge {
 		this.neighbour = neighbour;
 		this.capacity = capacity;
 		this.neighbourEdge = neighbourEdge;
+		flow = 0;
 	}
 	
 	public void setNeighbourEdge(DirectedEdge edge){
