@@ -18,7 +18,7 @@ public class RunFlowWithoutPipe {
 		String fileToRun;
 		
 		if(args.length == 0){
-			fileToRun = "testfall/bipartittest.indata";
+			fileToRun = "testfall/residualtest.indata";
 		} else{
 			fileToRun = args[0];
 		}

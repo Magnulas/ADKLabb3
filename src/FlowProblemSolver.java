@@ -1,5 +1,6 @@
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.TreeSet;
 
 
 public class FlowProblemSolver {
@@ -27,25 +28,24 @@ public class FlowProblemSolver {
 			int vertexTo = io.getInt()-1;
 			int weight = io.getInt();
 			
+//			FlowEdge edge = new FlowEdge(vertexFrom,vertexTo,weight,0);
 			DirectedEdge firstEdge = new DirectedEdge(vertexFrom,vertexTo,weight);
 			DirectedEdge secondEdge = new DirectedEdge(vertexTo,vertexFrom,0,firstEdge);
 			firstEdge.setNeighbourEdge(secondEdge);
-			
+//			edges[vertexFrom].add(edge);
+//			edges[vertexTo].add(edge);
 			edges[vertexFrom].add(firstEdge);
 			edges[vertexTo].add(secondEdge);
 		}
 		
 		//Make matching
-		edmondKarp(edges,sinkVertex,sourceVertex);
+//		edmondKarp(edges,sinkVertex,sourceVertex);
+		GraphAlgoritmLibrary.edmondKarp(edges,sinkVertex,sourceVertex);
 		
 		//Print graph
 		int totalFlow = flowSum(edges[sinkVertex]);
-		
-		io.println(sizeOfV);
-		io.println((sourceVertex+1) + " " + (sinkVertex+1) + " " + totalFlow);
-		
 		int numberOfEdges = 0;
-		
+		TreeSet<Integer> vertexes = new TreeSet<Integer>();
 		StringBuilder sb = new StringBuilder();
 		
 		for(int i = 0;i<edges.length;i++){
@@ -56,14 +56,25 @@ public class FlowProblemSolver {
 				if(edge.flow>0){
 					numberOfEdges++;
 					sb.append((i + 1) + " " + (edge.neighbour + 1) + " " + edge.flow + "\n");
+					
+					if(!vertexes.contains(i)){
+						vertexes.add(i);
+					}
+					if(!vertexes.contains(edge.neighbour)){
+						vertexes.add(edge.neighbour);
+					}
 				}
 			}
 		}
-				
+
+		//io.println(vertexes.size());
+		io.println(sizeOfV);
+		io.println((sourceVertex+1) + " " + (sinkVertex+1) + " " + totalFlow);
 		io.println(numberOfEdges);
 		io.println(sb);
 		
 		io.flush();
+		io.close();
 	}
 
 	private static int flowSum(LinkedList<DirectedEdge> edges) {
@@ -81,7 +92,7 @@ public class FlowProblemSolver {
 		//Negativa är flödet in, posetiva är flödet ut
 		return -sum;
 	}
-
+/*
 	private static void edmondKarp(LinkedList<DirectedEdge>[] edges, int sinkVertex, int sourceVertex) {
 		
 		LinkedList<Integer> path = null;
@@ -112,7 +123,8 @@ public class FlowProblemSolver {
 			}
 		}
 	}
-
+*/
+	/*
 	private static int getLeastFlow(DirectedEdge[] edges) {
 		int leastFlow = Integer.MAX_VALUE;
 		
@@ -137,7 +149,8 @@ public class FlowProblemSolver {
 		}
 		return null;
 	}
-
+	*/
+/*
 	private static LinkedList<Integer> breadthFirst(LinkedList<DirectedEdge>[] edges, int startVertex, int endVertex) {
 		
 		LinkedList<LinkedList<Integer>> queue = new LinkedList<LinkedList<Integer>>();
@@ -176,4 +189,5 @@ public class FlowProblemSolver {
 		
 		return null;
 	}
+*/
 }
