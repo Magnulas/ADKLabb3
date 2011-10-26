@@ -1,11 +1,11 @@
 
 public class DirectedEdge {
 	
-	int vertexFrom;
-	int neighbour;
-	int capacity;
-	int flow;
-	DirectedEdge neighbourEdge;
+	private int vertexFrom;
+	private int neighbour;
+	private int capacity;
+	private int flow;
+	private DirectedEdge neighbourEdge;
 	
 	public DirectedEdge(int vertexFrom, int neighbour, int capacity) {
 		this(vertexFrom, neighbour, capacity,null);
@@ -22,22 +22,36 @@ public class DirectedEdge {
 		neighbourEdge = edge;
 	}
 	
-//	public int getCapacity(){
-//		
-//		return capacity;
-//	}
-//	
-//	public boolean setFlow(int newFlow){
-//		if(newFlow<=capacity){
-//			flow = newFlow;
-//			return true;
-//		}
-//		
-//		return false;
-//	}
-//	
-//	public int getFlow(){
-//		
-//		return capacity;
-//	}
+	public boolean setFlow(int newFlow){
+		if(newFlow<=capacity){
+			flow = newFlow;
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public int getVertexFrom(){
+		return vertexFrom;
+	}
+	
+	public int getNeighbour(){
+		return neighbour;
+	}
+	
+	public int getCapacity(){
+		return capacity;
+	}
+	
+	public int getFlow(){
+		return flow;
+	}
+	
+	public int getResidualCapacity(){
+		return capacity-flow;
+	}
+	
+	public DirectedEdge getNeighbourEdge(){
+		return neighbourEdge;
+	}
 }
