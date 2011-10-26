@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -10,15 +11,36 @@ public class GraphAlgoritmLibrary {
 	
 	public static void edmondKarp(LinkedList<DirectedEdge>[] edges, int sinkVertex, int sourceVertex) {
 		
-		LinkedList<Integer> path = null;
-				
+		int[] parents = new int[edges.length];
+		
+
 		//Fixa så att retunerar edges inte vertexes
-		while((path = breadthFirst(edges,sourceVertex,sinkVertex))!=null){
+		while(breadthFirst(edges,sourceVertex,sinkVertex, parents)){
+			int currentNode = sinkVertex;
+			ArrayList<DirectedEdge> edgePath = new ArrayList<DirectedEdge>();
+			while(currentNode != sourceVertex) {
+				int parentNode = parents[currentNode];
+				edgePath.add(getEdge(edges[parentNode], currentNode));
+				currentNode = parentNode;
+			}
+			//DirectedEdge[] edgePath = new DirectedEdge[path.size()-1]; 
+			//Iterator<Integer> iter = path.iterator();    
+//			int vertexFrom = iter.next();	
 			
-			DirectedEdge[] edgePath = new DirectedEdge[path.size()-1]; 
-			Iterator<Integer> iter = path.iterator();    
-			int vertexFrom = iter.next();	
+
+			int leastFlow = getLeastFlow(edgePath);
+			for(DirectedEdge edge : edgePath) {
+
+				DirectedEdge neightbourEdge = edge.neighbourEdge;
+				
+//				edge.capacity = edge.capacity - leastFlow;
+//				neightbourEdge.capacity = neightbourEdge.capacity + leastFlow;
+				
+				edge.flow = edge.flow + leastFlow;
+				neightbourEdge.flow = neightbourEdge.flow - leastFlow;
+			}
 			
+			/*
 			for(int i = 0;iter.hasNext();i++){
 				int vertexTo = iter.next();
 				edgePath[i] = getEdge(edges[vertexFrom],vertexTo);
@@ -36,15 +58,15 @@ public class GraphAlgoritmLibrary {
 				
 				edge.flow = edge.flow + leastFlow;
 				neightbourEdge.flow = neightbourEdge.flow - leastFlow;
-			}
+			}*/
 		}
 	}
 	
-	private static int getLeastFlow(DirectedEdge[] edges) {
+	private static int getLeastFlow(ArrayList<DirectedEdge> edges) {
 		int leastFlow = Integer.MAX_VALUE;
 		
-		for(int i = 0;i<edges.length;i++){
-			int currentFlow = edges[i].capacity-edges[i].flow;
+		for(DirectedEdge edge : edges){
+			int currentFlow = edge.capacity-edge.flow;
 			if(currentFlow<leastFlow){
 				leastFlow = currentFlow;
 			}
@@ -53,43 +75,40 @@ public class GraphAlgoritmLibrary {
 		return leastFlow;
 	}
 	
-	private static LinkedList<Integer> breadthFirst(LinkedList<DirectedEdge>[] edges, int startVertex, int endVertex) {
+	private static boolean breadthFirst(LinkedList<DirectedEdge>[] edges, int startVertex, int endVertex, int[] parents) {
 		
-		LinkedList<LinkedList<Integer>> queue = new LinkedList<LinkedList<Integer>>();
+		IntQueue queue = new IntQueue();
 		boolean[] used = new boolean[edges.length];
-		LinkedList<Integer> startPath = new LinkedList<Integer>();
 		
-		startPath.add(startVertex);
 		used[startVertex] = true;
 		
-		queue.add(startPath);
+		queue.put(startVertex);
 		
 		while(!queue.isEmpty()){
 			
-			LinkedList<Integer> currentPath = queue.removeFirst();
-			int nextVertex = currentPath.getLast();
-			LinkedList<DirectedEdge> neighbours = edges[nextVertex];
+			int currentVertex = queue.get();
+			LinkedList<DirectedEdge> neighbours = edges[currentVertex];
 			
 			Iterator<DirectedEdge> iter = neighbours.iterator(); 
 			
 			while(iter.hasNext()){
 				DirectedEdge edge = iter.next();
-				if(used[edge.neighbour]==false&&(edge.capacity-edge.flow)>0){
-					used[edge.neighbour] = true;
+				if(used[edge.neighbour] == false && (edge.capacity-edge.flow)>0) {
 					
-					LinkedList<Integer> newPath = new LinkedList<Integer>(currentPath);
-					newPath.addLast(edge.neighbour);
+					int nextVertex = edge.neighbour;
+					parents[nextVertex] = currentVertex;
 					
 					if(endVertex==edge.neighbour){
-						return newPath;
+						return true;
 					}
 					
-					queue.addLast(newPath);
+					queue.put(nextVertex);
+					used[nextVertex] = true;
 				}
 			}
 		}
 		
-		return null;
+		return false;
 	}
 
 	private static DirectedEdge getEdge(LinkedList<DirectedEdge> neighbourList, int neighbour) {
