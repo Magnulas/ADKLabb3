@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import java.util.TreeSet;
 
 public class FlowProblemSolver {
 
@@ -17,33 +17,33 @@ public class FlowProblemSolver {
 		
 		Timer t = new Timer();
 		t.start();
-		
+
 		//LÄSNING AV GRAF
 		io = new Kattio(System.in,System.out);
 		ArrayList<DirectedEdge>[] edges = readFlowGraph();
 		
 		//Make matching
-		Set<DirectedEdge> edgesWithFlow = GraphAlgoritmLibrary.edmondKarp(edges,sinkVertex,sourceVertex);
-		GraphAlgoritmLibrary.edmondKarp(edges,sinkVertex,sourceVertex);
+//		GraphAlgoritmLibrary.edmondKarp(edges,sinkVertex,sourceVertex);
+		TreeSet<DirectedEdge> set = GraphAlgoritmLibrary.edmondKarp(edges,sinkVertex,sourceVertex);
 		
 		//Print graph
 //		printPosetiveFlow(edges);
-		printPosetiveFlow(edgesWithFlow, edges);
+		printPosetiveFlow(set, edges[sinkVertex]);
 		
 		t.stop();
 		io.println(t.getElapsedTime() + " ms");
 		io.flush();
 		io.close();
 	}
-
-	private static void printPosetiveFlow(Set<DirectedEdge> edgesWithFlow, List<DirectedEdge>[] edges) {
-		int totalFlow = flowSum(edges[sinkVertex]);
+	
+	private static void printPosetiveFlow(TreeSet<DirectedEdge> set, ArrayList<DirectedEdge> arrayList) {
+		int totalFlow = flowSum(arrayList);
 		int numberOfEdges = 0;
 		StringBuilder sb = new StringBuilder();
+			
+		Iterator<DirectedEdge> iter = set.iterator();
 		
-		Iterator<DirectedEdge> iter = edgesWithFlow.iterator();
-		
-		while(iter.hasNext()){
+		while(iter.hasNext()) {
 			DirectedEdge edge = iter.next();
 			int flow = edge.getFlow();
 			if(flow>0){
@@ -56,26 +56,6 @@ public class FlowProblemSolver {
 				sb.append(NEWLINE);
 			}
 		}
-		
-		/*
-		for(int i = 0;i<edges.length;i++){
-			
-			List<DirectedEdge> neighbours = edges[i];
-			int nNeighbours = neighbours.size();
-			for(int k = 0;k<nNeighbours; k++) {
-				DirectedEdge edge = neighbours.get(k);
-				int flow = edge.getFlow();
-				if(flow>0){
-					numberOfEdges++;
-					sb.append(i + 1);
-					sb.append(WHITESPACE);
-					sb.append(edge.getNeighbour() + 1);
-					sb.append(WHITESPACE);
-					sb.append(flow);
-					sb.append(NEWLINE);
-				}
-			}
-		}*/
 
 		io.println(sizeOfV);
 		
@@ -90,7 +70,7 @@ public class FlowProblemSolver {
 		
 		io.flush();
 	}
-	
+
 	private static void printPosetiveFlow(List<DirectedEdge>[] edges) {
 		int totalFlow = flowSum(edges[sinkVertex]);
 		int numberOfEdges = 0;

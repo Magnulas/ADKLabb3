@@ -6,7 +6,6 @@ public class DirectedEdge implements Comparable{
 	private int capacity;
 	private int flow;
 	private DirectedEdge neighbourEdge;
-	private int residualCapacity;
 	
 	public DirectedEdge(int vertexFrom, int neighbour, int capacity) {
 		this(vertexFrom, neighbour, capacity,null);
@@ -18,7 +17,6 @@ public class DirectedEdge implements Comparable{
 		this.capacity = capacity;
 		this.neighbourEdge = neighbourEdge;
 		flow = 0;
-		residualCapacity = capacity;
 	}
 	
 	public void setNeighbourEdge(DirectedEdge edge){
@@ -28,7 +26,6 @@ public class DirectedEdge implements Comparable{
 	public boolean setFlow(int newFlow){
 		if(newFlow<=capacity){
 			flow = newFlow;
-			residualCapacity = capacity-flow;
 			return true;
 		}
 		
@@ -52,7 +49,7 @@ public class DirectedEdge implements Comparable{
 	}
 	
 	public int getResidualCapacity(){
-		return residualCapacity;
+		return capacity-flow;
 	}
 	
 	public DirectedEdge getNeighbourEdge(){
@@ -65,7 +62,7 @@ public class DirectedEdge implements Comparable{
 		if(o instanceof DirectedEdge){
 			DirectedEdge e = (DirectedEdge) o;
 			
-			if(this.equals(e)){
+			if(e.vertexFrom == vertexFrom && e.neighbour == neighbour){
 				return 0;
 			} 
 			

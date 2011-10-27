@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.TreeSet;
 
 public class GraphAlgoritmLibrary {
@@ -9,45 +10,54 @@ public class GraphAlgoritmLibrary {
 		
 		TreeSet<DirectedEdge> edgesWithFlow = new TreeSet<DirectedEdge>();
 
-		while(breadthFirst(edges,sourceVertex,sinkVertex, parents)){
-			
-			int currentNode = sinkVertex;
-			ArrayList<DirectedEdge> edgePath = new ArrayList<DirectedEdge>();
-			while(currentNode != sourceVertex) {
-				int parentNode = parents[currentNode];
-				edgePath.add(getEdge(edges[parentNode], currentNode));
-				currentNode = parentNode;
-			}			
+		LinkedList<Integer> endVertexParents = new LinkedList<Integer>();
+		
+		while(multipleBreadthFirst(edges,sourceVertex,sinkVertex, parents, endVertexParents)){
+	
+			while(!endVertexParents.isEmpty()){
+				ArrayList<DirectedEdge> edgePath = new ArrayList<DirectedEdge>();
+				int currentNode = endVertexParents.removeFirst();
+				edgePath.add(getEdge(edges[currentNode], sinkVertex));
+								
+				while(currentNode != sourceVertex) {
+					int parentNode = parents[currentNode];
+					DirectedEdge e = getEdge(edges[parentNode], currentNode);
+					if(e==null){
+						edgePath.clear();
+						break;
+					}
+					edgePath.add(e);
+					currentNode = parentNode;
+				}			
 
-			int leastFlow = getLeastFlow(edgePath);
-			for(int i = 0;i<edgePath.size();i++){
-				DirectedEdge edge = edgePath.get(i);
-				int vertexFrom = edge.getVertexFrom();
-				int neighbourVertex = edge.getNeighbour();
-				
-				DirectedEdge neightbourEdge = edge.getNeighbourEdge();
-				
-				if(neightbourEdge==null){
-					neightbourEdge = new DirectedEdge(neighbourVertex,vertexFrom,0,edge);
-					edge.setNeighbourEdge(neightbourEdge);
-					edges[neighbourVertex].add(neightbourEdge);
-					edgesWithFlow.add(neightbourEdge);
+				int leastFlow = getLeastFlow(edgePath);
+				for(int i = 0;i<edgePath.size();i++){
+					DirectedEdge edge = edgePath.get(i);
+					int vertexFrom = edge.getVertexFrom();
+					int neighbourVertex = edge.getNeighbour();
+					
+					DirectedEdge neightbourEdge = edge.getNeighbourEdge();
+					
+					if(neightbourEdge==null){
+						neightbourEdge = new DirectedEdge(neighbourVertex,vertexFrom,0,edge);
+						edge.setNeighbourEdge(neightbourEdge);
+						edges[neighbourVertex].add(neightbourEdge);
+						edgesWithFlow.add(neightbourEdge);
+					}
+					
+					int newFlow = edge.getFlow() + leastFlow;
+					edge.setFlow(newFlow);
+					neightbourEdge.setFlow(-newFlow);
+					
+					if(newFlow==edge.getCapacity()){
+						//Göra removes snabbare?
+						edges[vertexFrom].remove(edge);
+					}
+					edgesWithFlow.add(edge);
 				}
-				
-				int newFlow = edge.getFlow() + leastFlow;
-				edge.setFlow(newFlow);
-				neightbourEdge.setFlow(-newFlow);
-				
-				if(newFlow==edge.getCapacity()){
-					//Göra removes snabbare?
-					edges[vertexFrom].remove(edge);
-					neightbourEdge.setNeighbourEdge(null);
-				}
-				
-				edgesWithFlow.add(edge);
 			}
 		}
-			
+		
 		return edgesWithFlow;
 	}
 	
@@ -65,7 +75,7 @@ public class GraphAlgoritmLibrary {
 		return leastFlow;
 	}
 	
-	private static boolean breadthFirst(ArrayList<DirectedEdge>[] edges, int startVertex, int endVertex, int[] parents) {
+	private static boolean multipleBreadthFirst(ArrayList<DirectedEdge>[] edges, int startVertex, int endVertex, int[] parents, LinkedList<Integer> endVertexParents) {
 		
 		IntQueue queue = new IntQueue();
 		boolean[] used = new boolean[edges.length];
@@ -87,18 +97,26 @@ public class GraphAlgoritmLibrary {
 				if(used[neighbour] == false && edge.getResidualCapacity()>0) {
 					
 					parents[neighbour] = currentVertex;
+					used[neighbour] = true;
 					
 					if(endVertex==neighbour){
-						return true;
+						endVertexParents.addLast(currentVertex);
+						used[neighbour] = false;
+		
+						break;
 					}
-					
+	
 					queue.put(neighbour);
-					used[neighbour] = true;
+					
 				}
 			}
 		}
 		
-		return false;
+		if(endVertexParents.isEmpty()){
+			return false;
+		} else{
+			return true;
+		}
 	}
 
 	private static DirectedEdge getEdge(ArrayList<DirectedEdge> neighbourList, int neighbour) {
