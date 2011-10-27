@@ -24,11 +24,11 @@ public class FlowProblemSolver {
 		
 		//Make matching
 		Set<DirectedEdge> edgesWithFlow = GraphAlgoritmLibrary.edmondKarp(edges,sinkVertex,sourceVertex);
-//		GraphAlgoritmLibrary.edmondKarp(edges,sinkVertex,sourceVertex);
+		GraphAlgoritmLibrary.edmondKarp(edges,sinkVertex,sourceVertex);
 		
 		//Print graph
 //		printPosetiveFlow(edges);
-//		printPosetiveFlow(edgesWithFlow, edges);
+		printPosetiveFlow(edgesWithFlow, edges);
 		
 		t.stop();
 		io.println(t.getElapsedTime() + " ms");

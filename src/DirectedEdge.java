@@ -18,6 +18,7 @@ public class DirectedEdge implements Comparable{
 		this.capacity = capacity;
 		this.neighbourEdge = neighbourEdge;
 		flow = 0;
+		residualCapacity = capacity;
 	}
 	
 	public void setNeighbourEdge(DirectedEdge edge){
