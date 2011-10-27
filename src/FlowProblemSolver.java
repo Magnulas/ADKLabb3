@@ -13,6 +13,9 @@ public class FlowProblemSolver {
 	
 	public static void main(String args[]){
 		
+		Timer t = new Timer();
+		t.start();
+		
 		//LÄSNING AV GRAF
 		io = new Kattio(System.in,System.out);
 		LinkedList<DirectedEdge>[] edges = readFlowGraph();
@@ -22,6 +25,10 @@ public class FlowProblemSolver {
 		
 		//Print graph
 		printPosetiveFlow(edges);
+		
+		t.stop();
+		io.println(t.getElapsedTime() + " ms");
+		io.flush();
 		io.close();
 	}
 
