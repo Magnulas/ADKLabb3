@@ -7,10 +7,10 @@ import java.util.Random;
 
 public class GenerateBipartiteGraph {
 
-	public static final String fileName = "testfall/HugeBipartiteGraph";
-	static int numberOfX = 5000;
-	static int numberOfY = 5000;
-	static int numberOfE = 2*numberOfX;
+	public static final String fileName = "testfall/HugeDenseBipartiteGraph";
+	static int numberOfX = 100;
+	static int numberOfY = 100;
+	static int numberOfE = 10000;
 	static Kattio io;
 	static Random rand;
 	
@@ -28,7 +28,12 @@ public class GenerateBipartiteGraph {
 		rand = new Random();
 				
 		for(int i = 1;i<=numberOfX;i++){
-			printTwoEdges(i);
+			
+			for(int j = numberOfX+1;j<=numberOfX+numberOfY;j++){
+				io.println(i + " " + j);
+			}
+			
+//			printTwoEdges(i);
 		}
 		
 		io.flush();

@@ -11,7 +11,7 @@ public class GenerateFlowGraph {
 		String fileToWrite;
 		
 		fileToRead = GenerateBipartiteGraph.fileName;
-		fileToWrite = "testfall/HugeFlowGraph";	
+		fileToWrite = "testfall/HugeDenseFlowGraph";	
 		
 		File fRead = new File(fileToRead);
 		File fWrite = new File(fileToWrite);
@@ -21,8 +21,8 @@ public class GenerateFlowGraph {
 		
 		System.setIn(is);
 		System.setOut(out);
-		
-		Matcher.main(null);
 		System.out.println("We don't have a black box for matcher sop we get an exception");
+		Matcher.main(null);
+		
 	}
 }
