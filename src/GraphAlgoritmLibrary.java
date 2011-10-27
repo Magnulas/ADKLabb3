@@ -31,7 +31,8 @@ public class GraphAlgoritmLibrary {
 				}			
 
 				int leastFlow = getLeastFlow(edgePath);
-				for(int i = 0;i<edgePath.size();i++){
+				int size = edgePath.size();
+				for(int i = 0;i<size;i++){
 					DirectedEdge edge = edgePath.get(i);
 					int vertexFrom = edge.getVertexFrom();
 					int neighbourVertex = edge.getNeighbour();
