@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.TreeSet;
 
 public class GraphAlgoritmLibrary {
@@ -7,7 +8,16 @@ public class GraphAlgoritmLibrary {
 	public static TreeSet<DirectedEdge> edmondKarp(ArrayList<DirectedEdge>[] edges, int sinkVertex, int sourceVertex) {
 		
 		int[] parents = new int[edges.length];
+		/*matris gav outOfMemory
+		DirectedEdge[][] edgeMatrix = new DirectedEdge[edges.length][edges.length];
 		
+		for(int i = 0;i<edges.length;i++){
+			List<DirectedEdge> l = edges[i];
+			for(DirectedEdge e : l){
+				edgeMatrix[i][e.getNeighbour()] = e;
+			}
+		}
+		*/
 		TreeSet<DirectedEdge> edgesWithFlow = new TreeSet<DirectedEdge>();
 
 		LinkedList<Integer> endVertexParents = new LinkedList<Integer>();
@@ -18,10 +28,12 @@ public class GraphAlgoritmLibrary {
 				ArrayList<DirectedEdge> edgePath = new ArrayList<DirectedEdge>();
 				int currentNode = endVertexParents.removeFirst();
 				edgePath.add(getEdge(edges[currentNode], sinkVertex));
+//				edgePath.add(edgeMatrix[currentNode][sinkVertex]);
 								
 				while(currentNode != sourceVertex) {
 					int parentNode = parents[currentNode];
 					DirectedEdge e = getEdge(edges[parentNode], currentNode);
+//					DirectedEdge e = edgeMatrix[parentNode][currentNode];
 					if(e==null){
 						edgePath.clear();
 						break;
