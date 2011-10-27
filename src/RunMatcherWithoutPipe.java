@@ -18,7 +18,7 @@ public class RunMatcherWithoutPipe {
 		String fileToRun;
 		
 		if(args.length == 0){
-			fileToRun = "testfall/ourgraph";
+			fileToRun = "testfall/kapacitetstest.indata";
 		} else{
 			fileToRun = args[0];
 		}

@@ -2,46 +2,48 @@ import java.util.ArrayList;
 
 public class GraphAlgoritmLibrary {
 	
-	public static void edmondKarp(ArrayList<DirectedEdge>[] edges, int sinkVertex, int sourceVertex) {
+	public static int[][] edmondKarp(ArrayList<Integer>[] edges, int sinkVertex, int sourceVertex, int[][]restCapacity) {
+		
+		int sizeOfV = restCapacity.length;
+		int[][] flow = new int[sizeOfV][sizeOfV];
 		
 		int[] parents = new int[edges.length];
 		
-		while(breadthFirst(edges,sourceVertex,sinkVertex, parents)){
+		/**
+		 * Låt sökningen ske på en restflödesgraf som består av samma kanter/objekt
+		 * som edges(hela grafen) men ha bara med de kanter som har restflöde?
+		 */
+		while(breadthFirst(edges, sourceVertex, sinkVertex, parents, restCapacity)){
+			
 			int currentNode = sinkVertex;
-			ArrayList<DirectedEdge> edgePath = new ArrayList<DirectedEdge>();
+			int leastFlow = Integer.MAX_VALUE;
 			while(currentNode != sourceVertex) {
 				int parentNode = parents[currentNode];
-				edgePath.add(getEdge(edges[parentNode], currentNode));
+				if(restCapacity[parentNode][currentNode] < leastFlow) {
+					leastFlow = restCapacity[parentNode][currentNode];
+				}
 				currentNode = parentNode;
-			}			
-
-			int leastFlow = getLeastFlow(edgePath);
-			for(DirectedEdge edge : edgePath) {
-
-				DirectedEdge neightbourEdge = edge.getNeighbourEdge();
+			}
+			
+			currentNode = sinkVertex;
+			while(currentNode != sourceVertex) {
+				/*
+				 * f[u,v]:=f[u,v]+r; f[v,u]:= -f[u,v]
+         		 * cf[u,v]:=c[u,v] - f[u,v]; cf[v,u]:=c[v,u] - f[v,u] 
+				 */
+				int parentNode = parents[currentNode];
+				flow[parentNode][currentNode] += leastFlow;
+				flow[currentNode][parentNode] = -flow[parentNode][currentNode];
+				restCapacity[parentNode][currentNode] -= leastFlow;
+				restCapacity[currentNode][parentNode] += leastFlow;
 				
-				int newFlow = edge.getFlow() + leastFlow;
-				edge.setFlow(newFlow);
-				neightbourEdge.setFlow(-newFlow);
+				currentNode = parentNode;
 			}
 		}
+		return flow;
 	}
 	
-	private static int getLeastFlow(ArrayList<DirectedEdge> edges) {
-		int leastFlow = Integer.MAX_VALUE;
-		
-		for(int i = 0;i<edges.size();i++){
-			DirectedEdge edge = edges.get(i);
-			int currentFlow = edge.getResidualCapacity();
-			if(currentFlow<leastFlow){
-				leastFlow = currentFlow;
-			}
-		}
-		
-		return leastFlow;
-	}
-	
-	private static boolean breadthFirst(ArrayList<DirectedEdge>[] edges, int startVertex, int endVertex, int[] parents) {
+	private static boolean breadthFirst(ArrayList<Integer>[] edges, int startVertex, int endVertex, int[] parents, int[][] restCapacity) {
 		
 		IntQueue queue = new IntQueue();
 		boolean[] used = new boolean[edges.length];
@@ -53,19 +55,18 @@ public class GraphAlgoritmLibrary {
 		while(!queue.isEmpty()){
 			
 			int currentVertex = queue.get();
-			ArrayList<DirectedEdge> neighbours = edges[currentVertex];
+			ArrayList<Integer> neighbours = edges[currentVertex];
 			
 			int nNeighbours = neighbours.size();
-			for(int i = 0;i<nNeighbours;i++){
-				DirectedEdge edge = neighbours.get(i);
-				int neighbour = edge.getNeighbour();
+			for(int i = 0; i < nNeighbours; i++){
+				int neighbour = neighbours.get(i);
 				
-				if(used[neighbour] == false && edge.getResidualCapacity()>0) {
+				if(!used[neighbour] && restCapacity[currentVertex][neighbour] > 0) {
 					
 					int nextVertex = neighbour;
 					parents[nextVertex] = currentVertex;
 					
-					if(endVertex==neighbour){
+					if(neighbour == endVertex){
 						return true;
 					}
 					
@@ -76,18 +77,5 @@ public class GraphAlgoritmLibrary {
 		}
 		
 		return false;
-	}
-
-	private static DirectedEdge getEdge(ArrayList<DirectedEdge> neighbourList, int neighbour) {
-
-		int nNeighbours = neighbourList.size();
-		for(int i = 0; i<nNeighbours;i++){
-			DirectedEdge edge = neighbourList.get(i);
-			if(edge.getNeighbour() == neighbour){
-				return edge;
-			}
-		}
-		
-		return null;
 	}
 }

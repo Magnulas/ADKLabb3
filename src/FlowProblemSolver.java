@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class FlowProblemSolver {
@@ -11,47 +10,84 @@ public class FlowProblemSolver {
 	private static int sizeOfV;
 	private static int sourceVertex;
 	private static int sinkVertex;
-	
+
+	@SuppressWarnings("unchecked")
 	public static void main(String args[]){
 		
-//		Timer t = new Timer();
-//		t.start();
-		
+		Timer t = new Timer();
+		t.start();
+
 		//LÄSNING AV GRAF
+
 		io = new Kattio(System.in,System.out);
-		ArrayList<DirectedEdge>[] edges = readFlowGraph();
+		
+		sizeOfV = io.getInt();
+		sourceVertex = io.getInt()-1;
+		sinkVertex = io.getInt()-1;
+		int sizeOfE = io.getInt();
+		
+		ArrayList<Integer>[] neighbourList = new ArrayList[sizeOfV];
+
+		int[][] capacity = new int[sizeOfV][sizeOfV];
+		int[][] restCapacity = new int[sizeOfV][sizeOfV];
+		
+		for(int i = 0; i < sizeOfV; i++){
+			neighbourList[i] = new ArrayList<Integer>();
+		}
+		
+		for(int i = 0; i < sizeOfE; i++){
+			int vertexFrom = io.getInt()-1; //Måste modifiera så vi får 0 indexerat
+			int vertexTo = io.getInt()-1;
+			int weight = io.getInt();
+			
+			if(!neighbourList[vertexFrom].contains(vertexTo))
+				neighbourList[vertexFrom].add(vertexTo);
+
+			if(!neighbourList[vertexTo].contains(vertexFrom))
+				neighbourList[vertexTo].add(vertexFrom);
+			
+			capacity[vertexFrom][vertexTo] = weight;
+			restCapacity[vertexFrom][vertexTo] = weight;
+		}
 		
 		//Make matching
-		GraphAlgoritmLibrary.edmondKarp(edges,sinkVertex,sourceVertex);
+		int[][] flow = GraphAlgoritmLibrary.edmondKarp(neighbourList, sinkVertex, sourceVertex, restCapacity);
 		
 		//Print graph
-		printPosetiveFlow(edges);
+		printPositiveFlow(neighbourList, flow);
 		
-//		t.stop();
-//		io.println(t.getElapsedTime() + " ms");
+		t.stop();
+		io.println(t.getElapsedTime() + " ms");
 		io.flush();
 		io.close();
 	}
 
-	private static void printPosetiveFlow(List<DirectedEdge>[] edges) {
-		int totalFlow = flowSum(edges[sinkVertex]);
+	private static void printPositiveFlow(ArrayList<Integer>[] neighbourList, int[][] flow) {
+		
+		// Calculate total flow
+		int totalFlow = 0;
+		for(int i = 0; i < neighbourList[sinkVertex].size(); i++) {
+			int neighbour = neighbourList[sinkVertex].get(i);
+			totalFlow += flow[neighbour][sinkVertex];
+		}
+		
 		int numberOfEdges = 0;
 		StringBuilder sb = new StringBuilder();
 		
-		for(int i = 0;i<edges.length;i++){
+		for(int i = 0;i<neighbourList.length;i++) {
 			
-			List<DirectedEdge> neighbours = edges[i];
+			List<Integer> neighbours = neighbourList[i];
 			int nNeighbours = neighbours.size();
-			for(int k = 0;k<nNeighbours; k++) {
-				DirectedEdge edge = neighbours.get(k);
-				int flow = edge.getFlow();
-				if(flow>0){
+			for(int k = 0; k < nNeighbours; k++) {
+				int neighbour = neighbours.get(k);
+				int currentFlow = flow[i][neighbour];
+				if(currentFlow > 0){
 					numberOfEdges++;
 					sb.append(i + 1);
 					sb.append(WHITESPACE);
-					sb.append(edge.getNeighbour() + 1);
+					sb.append(neighbour + 1);
 					sb.append(WHITESPACE);
-					sb.append(flow);
+					sb.append(currentFlow);
 					sb.append(NEWLINE);
 				}
 			}
@@ -67,10 +103,9 @@ public class FlowProblemSolver {
 		
 		io.println(numberOfEdges);
 		io.println(sb);
-		
-		io.flush();
 	}
 
+	/*
 	@SuppressWarnings("unchecked")
 	private static ArrayList<DirectedEdge>[] readFlowGraph() {
 		sizeOfV = io.getInt();
@@ -105,7 +140,7 @@ public class FlowProblemSolver {
 
 		int nNeighbours = edges.size();
 		for(int i = 0;i<nNeighbours;i++){
-			DirectedEdge edge = edges.get(i);
+			int neighbour = edges.get(i);
 			int flow = edge.getFlow();
 			if(flow<0){
 				sum += flow;
@@ -114,5 +149,5 @@ public class FlowProblemSolver {
 				
 		//Negativa är flödet in, posetiva är flödet ut
 		return -sum;
-	}
+	}*/
 }
