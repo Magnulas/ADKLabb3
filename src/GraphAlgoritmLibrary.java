@@ -55,7 +55,8 @@ public class GraphAlgoritmLibrary {
 			int currentVertex = queue.get();
 			ArrayList<DirectedEdge> neighbours = edges[currentVertex];
 			
-			for(int i = 0;i<neighbours.size();i++){
+			int nNeighbours = neighbours.size();
+			for(int i = 0;i<nNeighbours;i++){
 				DirectedEdge edge = neighbours.get(i);
 				int neighbour = edge.getNeighbour();
 				
@@ -78,8 +79,9 @@ public class GraphAlgoritmLibrary {
 	}
 
 	private static DirectedEdge getEdge(ArrayList<DirectedEdge> neighbourList, int neighbour) {
-		
-		for(int i = 0; i<neighbourList.size();i++){
+
+		int nNeighbours = neighbourList.size();
+		for(int i = 0; i<nNeighbours;i++){
 			DirectedEdge edge = neighbourList.get(i);
 			if(edge.getNeighbour() == neighbour){
 				return edge;

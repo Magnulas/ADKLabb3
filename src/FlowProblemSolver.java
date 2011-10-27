@@ -14,8 +14,8 @@ public class FlowProblemSolver {
 	
 	public static void main(String args[]){
 		
-		Timer t = new Timer();
-		t.start();
+//		Timer t = new Timer();
+//		t.start();
 		
 		//LÄSNING AV GRAF
 		io = new Kattio(System.in,System.out);
@@ -27,8 +27,8 @@ public class FlowProblemSolver {
 		//Print graph
 		printPosetiveFlow(edges);
 		
-		t.stop();
-		io.println(t.getElapsedTime() + " ms");
+//		t.stop();
+//		io.println(t.getElapsedTime() + " ms");
 		io.flush();
 		io.close();
 	}
@@ -39,10 +39,11 @@ public class FlowProblemSolver {
 		StringBuilder sb = new StringBuilder();
 		
 		for(int i = 0;i<edges.length;i++){
-			Iterator<DirectedEdge> iter = edges[i].iterator();
 			
-			while(iter.hasNext()){
-				DirectedEdge edge = iter.next();
+			List<DirectedEdge> neighbours = edges[i];
+			int nNeighbours = neighbours.size();
+			for(int k = 0;k<nNeighbours; k++) {
+				DirectedEdge edge = neighbours.get(k);
 				int flow = edge.getFlow();
 				if(flow>0){
 					numberOfEdges++;
@@ -101,8 +102,9 @@ public class FlowProblemSolver {
 		
 		int sum = 0;
 		
-		
-		for(int i = 0;i<edges.size();i++){
+
+		int nNeighbours = edges.size();
+		for(int i = 0;i<nNeighbours;i++){
 			DirectedEdge edge = edges.get(i);
 			int flow = edge.getFlow();
 			if(flow<0){
