@@ -1,5 +1,6 @@
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.List;
 
 public class FlowProblemSolver {
 
@@ -18,7 +19,7 @@ public class FlowProblemSolver {
 		
 		//LÄSNING AV GRAF
 		io = new Kattio(System.in,System.out);
-		LinkedList<DirectedEdge>[] edges = readFlowGraph();
+		ArrayList<DirectedEdge>[] edges = readFlowGraph();
 		
 		//Make matching
 		GraphAlgoritmLibrary.edmondKarp(edges,sinkVertex,sourceVertex);
@@ -32,7 +33,7 @@ public class FlowProblemSolver {
 		io.close();
 	}
 
-	private static void printPosetiveFlow(LinkedList<DirectedEdge>[] edges) {
+	private static void printPosetiveFlow(List<DirectedEdge>[] edges) {
 		int totalFlow = flowSum(edges[sinkVertex]);
 		int numberOfEdges = 0;
 		StringBuilder sb = new StringBuilder();
@@ -70,16 +71,16 @@ public class FlowProblemSolver {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static LinkedList<DirectedEdge>[] readFlowGraph() {
+	private static ArrayList<DirectedEdge>[] readFlowGraph() {
 		sizeOfV = io.getInt();
 		sourceVertex = io.getInt()-1;
 		sinkVertex = io.getInt()-1;
 		int sizeOfE = io.getInt();
 		
-		LinkedList<DirectedEdge>[] edges = new LinkedList[sizeOfV];
+		ArrayList<DirectedEdge>[] edges = new ArrayList[sizeOfV];
 		
 		for(int i = 0;i<sizeOfV;i++){
-			edges[i] = new LinkedList<DirectedEdge>();
+			edges[i] = new ArrayList<DirectedEdge>();
 		}
 		
 		for(int i = 0;i<sizeOfE;i++){
@@ -88,8 +89,7 @@ public class FlowProblemSolver {
 			int weight = io.getInt();
 		
 			DirectedEdge firstEdge = new DirectedEdge(vertexFrom,vertexTo,weight);
-//			DirectedEdge secondEdge = new DirectedEdge(vertexTo,vertexFrom,0,firstEdge);
-			DirectedEdge secondEdge = new DirectedEdge(vertexTo,vertexFrom,weight,firstEdge);
+			DirectedEdge secondEdge = new DirectedEdge(vertexTo,vertexFrom,0,firstEdge);
 			firstEdge.setNeighbourEdge(secondEdge);
 			edges[vertexFrom].add(firstEdge);
 			edges[vertexTo].add(secondEdge);
@@ -97,21 +97,19 @@ public class FlowProblemSolver {
 		return edges;
 	}
 
-	private static int flowSum(LinkedList<DirectedEdge> edges) {
+	private static int flowSum(List<DirectedEdge> edges) {
 		
 		int sum = 0;
 		
-		Iterator<DirectedEdge> iter = edges.iterator();
 		
-		while(iter.hasNext()){
-			DirectedEdge edge = iter.next();
-//			if(edge.flow<0){
-//				sum += edge.flow;
+		for(int i = 0;i<edges.size();i++){
+			DirectedEdge edge = edges.get(i);
 			int flow = edge.getFlow();
 			if(flow<0){
 				sum += flow;
 			}
 		}
+				
 		//Negativa är flödet in, posetiva är flödet ut
 		return -sum;
 	}

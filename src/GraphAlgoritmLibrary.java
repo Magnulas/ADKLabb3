@@ -1,10 +1,8 @@
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
 
 public class GraphAlgoritmLibrary {
 	
-	public static void edmondKarp(LinkedList<DirectedEdge>[] edges, int sinkVertex, int sourceVertex) {
+	public static void edmondKarp(ArrayList<DirectedEdge>[] edges, int sinkVertex, int sourceVertex) {
 		
 		int[] parents = new int[edges.length];
 		
@@ -32,7 +30,8 @@ public class GraphAlgoritmLibrary {
 	private static int getLeastFlow(ArrayList<DirectedEdge> edges) {
 		int leastFlow = Integer.MAX_VALUE;
 		
-		for(DirectedEdge edge : edges){
+		for(int i = 0;i<edges.size();i++){
+			DirectedEdge edge = edges.get(i);
 			int currentFlow = edge.getResidualCapacity();
 			if(currentFlow<leastFlow){
 				leastFlow = currentFlow;
@@ -42,7 +41,7 @@ public class GraphAlgoritmLibrary {
 		return leastFlow;
 	}
 	
-	private static boolean breadthFirst(LinkedList<DirectedEdge>[] edges, int startVertex, int endVertex, int[] parents) {
+	private static boolean breadthFirst(ArrayList<DirectedEdge>[] edges, int startVertex, int endVertex, int[] parents) {
 		
 		IntQueue queue = new IntQueue();
 		boolean[] used = new boolean[edges.length];
@@ -54,12 +53,10 @@ public class GraphAlgoritmLibrary {
 		while(!queue.isEmpty()){
 			
 			int currentVertex = queue.get();
-			LinkedList<DirectedEdge> neighbours = edges[currentVertex];
+			ArrayList<DirectedEdge> neighbours = edges[currentVertex];
 			
-			Iterator<DirectedEdge> iter = neighbours.iterator(); 
-			
-			while(iter.hasNext()){
-				DirectedEdge edge = iter.next();
+			for(int i = 0;i<neighbours.size();i++){
+				DirectedEdge edge = neighbours.get(i);
 				int neighbour = edge.getNeighbour();
 				
 				if(used[neighbour] == false && edge.getResidualCapacity()>0) {
@@ -80,15 +77,15 @@ public class GraphAlgoritmLibrary {
 		return false;
 	}
 
-	private static DirectedEdge getEdge(LinkedList<DirectedEdge> neighbourList, int neighbour) {
-		Iterator<DirectedEdge> iter = neighbourList.iterator(); 
+	private static DirectedEdge getEdge(ArrayList<DirectedEdge> neighbourList, int neighbour) {
 		
-		while(iter.hasNext()){
-			DirectedEdge edge = iter.next();
+		for(int i = 0; i<neighbourList.size();i++){
+			DirectedEdge edge = neighbourList.get(i);
 			if(edge.getNeighbour() == neighbour){
 				return edge;
 			}
 		}
+		
 		return null;
 	}
 }
