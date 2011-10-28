@@ -23,13 +23,13 @@ public class FlowProblemSolver {
 		ArrayList<DirectedEdge>[] edges = readFlowGraph();
 		
 		//Make matching
-//		GraphAlgoritmLibrary.edmondKarp(edges,sinkVertex,sourceVertex);
-		TreeSet<DirectedEdge> set = GraphAlgoritmLibrary.edmondKarp(edges,sinkVertex,sourceVertex);
+		GraphAlgoritmLibrary.edmondKarp(edges,sinkVertex,sourceVertex);
+//		TreeSet<DirectedEdge> set = GraphAlgoritmLibrary.edmondKarp(edges,sinkVertex,sourceVertex);
 		
 		//Print graph
-//		printPosetiveFlow(edges);
-		printPosetiveFlow(set, edges[sinkVertex]);
-		
+		printPosetiveFlow(edges);
+//		printPosetiveFlow(set, edges[sinkVertex]);
+//		
 		t.stop();
 		io.println(t.getElapsedTime() + " ms");
 		io.flush();

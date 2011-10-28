@@ -5,9 +5,9 @@ import java.util.TreeSet;
 
 public class GraphAlgoritmLibrary {
 	
-	public static TreeSet<DirectedEdge> edmondKarp(ArrayList<DirectedEdge>[] edges, int sinkVertex, int sourceVertex) {
+	public static void edmondKarp(ArrayList<DirectedEdge>[] edges, int sinkVertex, int sourceVertex) {
 		
-		int[] parents = new int[edges.length];
+		DirectedEdge[] parents = new DirectedEdge[edges.length];
 		/*matris gav outOfMemory
 		DirectedEdge[][] edgeMatrix = new DirectedEdge[edges.length][edges.length];
 		
@@ -18,60 +18,69 @@ public class GraphAlgoritmLibrary {
 			}
 		}
 		*/
-		TreeSet<DirectedEdge> edgesWithFlow = new TreeSet<DirectedEdge>();
+//		TreeSet<DirectedEdge> edgesWithFlow = new TreeSet<DirectedEdge>();
 
-		LinkedList<Integer> endVertexParents = new LinkedList<Integer>();
+		LinkedList<DirectedEdge> endVertexParents = new LinkedList<DirectedEdge>();
 		
 		while(multipleBreadthFirst(edges,sourceVertex,sinkVertex, parents, endVertexParents)){
 	
 			while(!endVertexParents.isEmpty()){
 				ArrayList<DirectedEdge> edgePath = new ArrayList<DirectedEdge>();
-				int currentNode = endVertexParents.removeFirst();
-				edgePath.add(getEdge(edges[currentNode], sinkVertex));
-//				edgePath.add(edgeMatrix[currentNode][sinkVertex]);
-								
-				while(currentNode != sourceVertex) {
-					int parentNode = parents[currentNode];
-					DirectedEdge e = getEdge(edges[parentNode], currentNode);
+				DirectedEdge currentEdge = endVertexParents.removeFirst();
+//				edgePath.add(getEdge(edges[currentNode], sinkVertex));
+				edgePath.add(currentEdge);
+				
+				int leastFlow = Integer.MAX_VALUE;
+				
+				while(currentEdge.getVertexFrom() != sourceVertex) {
+					currentEdge = parents[currentEdge.getVertexFrom()];
+//					int parentNode = parents[currentNode];
+//					DirectedEdge e = getEdge(edges[parentNode], currentNode);
 //					DirectedEdge e = edgeMatrix[parentNode][currentNode];
-					if(e==null){
+					int currentFlow = currentEdge.getResidualCapacity();
+					if(currentFlow<leastFlow){
+						leastFlow = currentFlow;
+					}
+					if(leastFlow==0){
 						edgePath.clear();
 						break;
 					}
-					edgePath.add(e);
-					currentNode = parentNode;
+					edgePath.add(currentEdge);
+//					currentNode = parentNode;
 				}			
 
-				int leastFlow = getLeastFlow(edgePath);
+//				int leastFlow = getLeastFlow(edgePath);
 				int size = edgePath.size();
-				for(int i = 0;i<size;i++){
-					DirectedEdge edge = edgePath.get(i);
-					int vertexFrom = edge.getVertexFrom();
-					int neighbourVertex = edge.getNeighbour();
-					
-					DirectedEdge neightbourEdge = edge.getNeighbourEdge();
-					
-					if(neightbourEdge==null){
-						neightbourEdge = new DirectedEdge(neighbourVertex,vertexFrom,0,edge);
-						edge.setNeighbourEdge(neightbourEdge);
-						edges[neighbourVertex].add(neightbourEdge);
-						edgesWithFlow.add(neightbourEdge);
-					}
-					
-					int newFlow = edge.getFlow() + leastFlow;
-					edge.setFlow(newFlow);
-					neightbourEdge.setFlow(-newFlow);
-					
-					if(newFlow==edge.getCapacity()){
-						//Göra removes snabbare?
-						edges[vertexFrom].remove(edge);
-					}
-					edgesWithFlow.add(edge);
+//				if(leastFlow>0){
+					for(int i = 0;i<size;i++){
+						DirectedEdge edge = edgePath.get(i);
+						int vertexFrom = edge.getVertexFrom();
+						int neighbourVertex = edge.getNeighbour();
+						
+						DirectedEdge neightbourEdge = edge.getNeighbourEdge();
+						
+						if(neightbourEdge==null){
+							neightbourEdge = new DirectedEdge(neighbourVertex,vertexFrom,0,edge);
+							edge.setNeighbourEdge(neightbourEdge);
+							edges[neighbourVertex].add(neightbourEdge);
+//							edgesWithFlow.add(neightbourEdge);
+						}
+						
+						int newFlow = edge.getFlow() + leastFlow;
+						edge.setFlow(newFlow);
+						neightbourEdge.setFlow(-newFlow);
+						
+	//					if(newFlow==edge.getCapacity()){
+	//						//Göra removes snabbare?
+	//						edges[vertexFrom].remove(edge);
+	//					}
+//						edgesWithFlow.add(edge);
+//					}
 				}
 			}
 		}
 		
-		return edgesWithFlow;
+//		return edgesWithFlow;
 	}
 	
 	private static int getLeastFlow(ArrayList<DirectedEdge> edges) {
@@ -83,12 +92,15 @@ public class GraphAlgoritmLibrary {
 			if(currentFlow<leastFlow){
 				leastFlow = currentFlow;
 			}
+			if(leastFlow==0){
+				return leastFlow;
+			}
 		}
 		
 		return leastFlow;
 	}
 	
-	private static boolean multipleBreadthFirst(ArrayList<DirectedEdge>[] edges, int startVertex, int endVertex, int[] parents, LinkedList<Integer> endVertexParents) {
+	private static boolean multipleBreadthFirst(ArrayList<DirectedEdge>[] edges, int startVertex, int endVertex, DirectedEdge[] parents, LinkedList<DirectedEdge> endVertexParents) {
 		
 		IntQueue queue = new IntQueue();
 		boolean[] used = new boolean[edges.length];
@@ -109,11 +121,11 @@ public class GraphAlgoritmLibrary {
 				
 				if(used[neighbour] == false && edge.getResidualCapacity()>0) {
 					
-					parents[neighbour] = currentVertex;
+					parents[neighbour] = edge;
 					used[neighbour] = true;
 					
 					if(endVertex==neighbour){
-						endVertexParents.addLast(currentVertex);
+						endVertexParents.addLast(edge);
 						used[neighbour] = false;
 		
 						break;
