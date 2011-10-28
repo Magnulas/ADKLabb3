@@ -30,52 +30,55 @@ public class GraphAlgoritmLibrary {
 //				edgePath.add(getEdge(edges[currentNode], sinkVertex));
 				edgePath.add(currentEdge);
 				
-				int leastFlow = Integer.MAX_VALUE;
+//				int leastFlow = Integer.MAX_VALUE;
 				
 				while(currentEdge.getVertexFrom() != sourceVertex) {
 					currentEdge = parents[currentEdge.getVertexFrom()];
 //					int parentNode = parents[currentNode];
 //					DirectedEdge e = getEdge(edges[parentNode], currentNode);
 //					DirectedEdge e = edgeMatrix[parentNode][currentNode];
-					int currentFlow = currentEdge.getResidualCapacity();
-					if(currentFlow<leastFlow){
-						leastFlow = currentFlow;
-					}
-					if(leastFlow==0){
-						edgePath.clear();
-						break;
-					}
+					
+//					int currentFlow = currentEdge.getResidualCapacity();
+//					if(currentFlow<leastFlow){
+//						leastFlow = currentFlow;
+//					}
+//					if(leastFlow==0){
+//						edgePath.clear();
+//						break;
+//					}
+					
 					edgePath.add(currentEdge);
 //					currentNode = parentNode;
 				}			
 
-//				int leastFlow = getLeastFlow(edgePath);
-				int size = edgePath.size();
-//				if(leastFlow>0){
+				int leastFlow = getLeastFlow(edgePath);
+				
+				if(leastFlow>0){
+					int size = edgePath.size();
 					for(int i = 0;i<size;i++){
 						DirectedEdge edge = edgePath.get(i);
 						int vertexFrom = edge.getVertexFrom();
 						int neighbourVertex = edge.getNeighbour();
-						
+							
 						DirectedEdge neightbourEdge = edge.getNeighbourEdge();
-						
+							
 						if(neightbourEdge==null){
 							neightbourEdge = new DirectedEdge(neighbourVertex,vertexFrom,0,edge);
 							edge.setNeighbourEdge(neightbourEdge);
 							edges[neighbourVertex].add(neightbourEdge);
-//							edgesWithFlow.add(neightbourEdge);
+	//						edgesWithFlow.add(neightbourEdge);
 						}
-						
+							
 						int newFlow = edge.getFlow() + leastFlow;
 						edge.setFlow(newFlow);
 						neightbourEdge.setFlow(-newFlow);
-						
-	//					if(newFlow==edge.getCapacity()){
-	//						//Göra removes snabbare?
-	//						edges[vertexFrom].remove(edge);
-	//					}
-//						edgesWithFlow.add(edge);
-//					}
+							
+		//				if(newFlow==edge.getCapacity()){
+		//					//Gï¿½ra removes snabbare?
+		//					edges[vertexFrom].remove(edge);
+		//				}
+	//					edgesWithFlow.add(edge);
+					}
 				}
 			}
 		}
