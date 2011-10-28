@@ -13,14 +13,14 @@ import java.io.IOException;
  * @author Magnus
  *
  */
-public class RunMatcherWithoutPipe {
+public class RunCombinedWithoutPipe {
 
 	public static void main(String args[]) throws IOException{
 		
 		String fileToRun;
 		
 		if(args.length == 0){
-			fileToRun = "testfall/ourgraph";
+			fileToRun = "testfall/formattest.indata";
 		} else{
 			fileToRun = args[0];
 		}
@@ -29,6 +29,6 @@ public class RunMatcherWithoutPipe {
 		
 		System.setIn(is);
 		
-		Matcher.main(null);
+		CombinedMatcherFlow.main(null);
 	}
 }

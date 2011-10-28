@@ -1,7 +1,5 @@
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.TreeSet;
 
 public class FlowProblemSolver {
 
@@ -15,60 +13,17 @@ public class FlowProblemSolver {
 	
 	public static void main(String args[]){
 		
-		Timer t = new Timer();
-		t.start();
-
 		//LÄSNING AV GRAF
 		io = new Kattio(System.in,System.out);
 		ArrayList<DirectedEdge>[] edges = readFlowGraph();
 		
 		//Make matching
 		GraphAlgoritmLibrary.edmondKarp(edges,sinkVertex,sourceVertex);
-//		TreeSet<DirectedEdge> set = GraphAlgoritmLibrary.edmondKarp(edges,sinkVertex,sourceVertex);
 		
 		//Print graph
 		printPosetiveFlow(edges);
-//		printPosetiveFlow(set, edges[sinkVertex]);
-//		
-		t.stop();
-		io.println(t.getElapsedTime() + " ms");
 		io.flush();
 		io.close();
-	}
-	
-	private static void printPosetiveFlow(TreeSet<DirectedEdge> set, ArrayList<DirectedEdge> arrayList) {
-		int totalFlow = flowSum(arrayList);
-		int numberOfEdges = 0;
-		StringBuilder sb = new StringBuilder();
-			
-		Iterator<DirectedEdge> iter = set.iterator();
-		
-		while(iter.hasNext()) {
-			DirectedEdge edge = iter.next();
-			int flow = edge.getFlow();
-			if(flow>0){
-				numberOfEdges++;
-				sb.append(edge.getVertexFrom() + 1);
-				sb.append(WHITESPACE);
-				sb.append(edge.getNeighbour() + 1);
-				sb.append(WHITESPACE);
-				sb.append(flow);
-				sb.append(NEWLINE);
-			}
-		}
-
-		io.println(sizeOfV);
-		
-		io.print(sourceVertex+1);
-		io.print(WHITESPACE); 
-		io.print(sinkVertex+1); 
-		io.print(WHITESPACE);
-		io.println(totalFlow);
-		
-		io.println(numberOfEdges);
-		io.println(sb);
-		
-		io.flush();
 	}
 
 	private static void printPosetiveFlow(List<DirectedEdge>[] edges) {
@@ -128,10 +83,7 @@ public class FlowProblemSolver {
 			int weight = io.getInt();
 		
 			DirectedEdge firstEdge = new DirectedEdge(vertexFrom,vertexTo,weight);
-//			DirectedEdge secondEdge = new DirectedEdge(vertexTo,vertexFrom,0,firstEdge);
-//			firstEdge.setNeighbourEdge(secondEdge);
 			edges[vertexFrom].add(firstEdge);
-//			edges[vertexTo].add(secondEdge);
 		}
 		return edges;
 	}

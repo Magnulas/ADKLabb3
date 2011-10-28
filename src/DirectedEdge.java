@@ -1,5 +1,5 @@
 
-public class DirectedEdge implements Comparable{
+public class DirectedEdge {//implements Comparable{
 	
 	private int vertexFrom;
 	private int neighbour;
@@ -56,34 +56,34 @@ public class DirectedEdge implements Comparable{
 		return neighbourEdge;
 	}
 
-	@Override
-	public int compareTo(Object o) {
-		
-		if(o instanceof DirectedEdge){
-			DirectedEdge e = (DirectedEdge) o;
-			
-			if(e.vertexFrom == vertexFrom && e.neighbour == neighbour){
-				return 0;
-			} 
-			
-			int eVertexFrom = e.getVertexFrom();
-			
-			if(vertexFrom >= eVertexFrom){
-				
-				if(vertexFrom==eVertexFrom){
-					if(neighbour > e.getNeighbour()){
-						return 1;
-					} else{
-						return -1;
-					}
-				}
-				
-				return 1;
-			} else{
-				return -1;
-			}
-		} else{
-			throw new ClassCastException();
-		}
-	}
+//	@Override
+//	public int compareTo(Object o) {
+//		
+//		if(o instanceof DirectedEdge){
+//			DirectedEdge e = (DirectedEdge) o;
+//			
+//			if(e.vertexFrom == vertexFrom && e.neighbour == neighbour){
+//				return 0;
+//			} 
+//			
+//			int eVertexFrom = e.getVertexFrom();
+//			
+//			if(vertexFrom >= eVertexFrom){
+//				
+//				if(vertexFrom==eVertexFrom){
+//					if(neighbour > e.getNeighbour()){
+//						return 1;
+//					} else{
+//						return -1;
+//					}
+//				}
+//				
+//				return 1;
+//			} else{
+//				return -1;
+//			}
+//		} else{
+//			throw new ClassCastException();
+//		}
+//	}
 }
